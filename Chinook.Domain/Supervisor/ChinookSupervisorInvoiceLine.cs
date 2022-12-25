@@ -8,9 +8,9 @@ namespace Chinook.Domain.Supervisor;
 
 public partial class ChinookSupervisor
 {
-    public async Task<IEnumerable<InvoiceLineApiModel>> GetAllInvoiceLine()
+    public async Task<PagedList<InvoiceLineApiModel>> GetAllInvoiceLine(int pageNumber, int pageSize)
     {
-        List<InvoiceLine> invoiceLines = await _invoiceLineRepository.GetAll();
+        var invoiceLines = await _invoiceLineRepository.GetAll(pageNumber, pageSize);
         var invoiceLineApiModels = invoiceLines.ConvertAll();
 
         foreach (var invoiceLine in invoiceLineApiModels)
@@ -21,8 +21,8 @@ public partial class ChinookSupervisor
             ;
             _cache.Set(string.Concat("InvoiceLine-", invoiceLine.Id), invoiceLine, (TimeSpan)cacheEntryOptions);
         }
-
-        return invoiceLineApiModels;
+        var newPagedList = new PagedList<InvoiceLineApiModel>(invoiceLineApiModels.ToList(), invoiceLines.TotalCount, invoiceLines.CurrentPage, invoiceLines.PageSize);
+        return newPagedList;
     }
 
     public async Task<InvoiceLineApiModel> GetInvoiceLineById(int id)
@@ -53,16 +53,20 @@ public partial class ChinookSupervisor
         }
     }
 
-    public async Task<IEnumerable<InvoiceLineApiModel>> GetInvoiceLineByInvoiceId(int id)
+    public async Task<PagedList<InvoiceLineApiModel>> GetInvoiceLineByInvoiceId(int id, int pageNumber, int pageSize)
     {
-        var invoiceLines = await _invoiceLineRepository.GetByInvoiceId(id);
-        return invoiceLines.ConvertAll();
+        var invoiceLines = await _invoiceLineRepository.GetByInvoiceId(id, pageNumber, pageSize);
+        var invoiceLineApiModels = invoiceLines.ConvertAll();
+        var newPagedList = new PagedList<InvoiceLineApiModel>(invoiceLineApiModels.ToList(), invoiceLines.TotalCount, invoiceLines.CurrentPage, invoiceLines.PageSize);
+        return newPagedList;
     }
 
-    public async Task<IEnumerable<InvoiceLineApiModel>> GetInvoiceLineByTrackId(int id)
+    public async Task<PagedList<InvoiceLineApiModel>> GetInvoiceLineByTrackId(int id, int pageNumber, int pageSize)
     {
-        var invoiceLines = await _invoiceLineRepository.GetByTrackId(id);
-        return invoiceLines.ConvertAll();
+        var invoiceLines = await _invoiceLineRepository.GetByTrackId(id, pageNumber, pageSize);
+        var invoiceLineApiModels = invoiceLines.ConvertAll();
+        var newPagedList = new PagedList<InvoiceLineApiModel>(invoiceLineApiModels.ToList(), invoiceLines.TotalCount, invoiceLines.CurrentPage, invoiceLines.PageSize);
+        return newPagedList;
     }
 
     public async Task<InvoiceLineApiModel> AddInvoiceLine(InvoiceLineApiModel newInvoiceLineApiModel)

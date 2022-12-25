@@ -1,4 +1,5 @@
 ﻿using Chinook.Domain.Entities;
+using Chinook.Domain.Extensions;
 using Chinook.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,10 +13,15 @@ public class InvoiceRepository : BaseRepository<Invoice>, IDisposable, IInvoiceR
 
     public void Dispose() => _context.Dispose();
 
-    public async Task<List<Invoice>> GetByEmployeeId(int id) =>
-        await _context.Customers.Where(a => a.SupportRepId == 5).SelectMany(t => t.Invoices)
-            .AsNoTrackingWithIdentityResolution().ToListAsync();
+    public async Task<PagedList<Invoice>> GetByEmployeeId(int id, int pageNumber, int pageSize) =>
+        await PagedList<Invoice>.ToPagedListAsync(_context.Customers.Where(a => a.SupportRepId == id).SelectMany(t => t.Invoices)
+                .AsNoTrackingWithIdentityResolution(),
+            pageNumber,
+            pageSize);
 
-    public async Task<List<Invoice>> GetByCustomerId(int id) =>
-        await _context.Invoices.Where(i => i.CustomerId == id).AsNoTrackingWithIdentityResolution().ToListAsync();
+    public async Task<PagedList<Invoice>> GetByCustomerId(int id, int pageNumber, int pageSize) =>
+        await PagedList<Invoice>.ToPagedListAsync(_context.Invoices.Where(a => a.CustomerId == id)
+                .AsNoTrackingWithIdentityResolution(),
+            pageNumber,
+            pageSize);
 }

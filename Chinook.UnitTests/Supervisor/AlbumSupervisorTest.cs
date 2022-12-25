@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Chinook.DataCmpldQry;
+using Chinook.Data;
 using Chinook.Domain.Entities;
 using Chinook.Domain.Repositories;
 using Chinook.Domain.Supervisor;
@@ -61,7 +61,7 @@ public class AlbumSupervisorTest : IDisposable
         await _context.SaveChangesAsync();
 
         // Act
-        var albums = (await _super.GetAllAlbum()).ToList();
+        var albums = (await _super.GetAllAlbum(1,50)).ToList();
 
         // Assert
         //albums.Count.Should().Be(2);

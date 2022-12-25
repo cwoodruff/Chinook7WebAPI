@@ -8,9 +8,9 @@ namespace Chinook.Domain.Supervisor;
 
 public partial class ChinookSupervisor
 {
-    public async Task<IEnumerable<InvoiceApiModel>> GetAllInvoice()
+    public async Task<PagedList<InvoiceApiModel>> GetAllInvoice(int pageNumber, int pageSize)
     {
-        List<Invoice> invoices = await _invoiceRepository.GetAll();
+        var invoices = await _invoiceRepository.GetAll(pageNumber, pageSize);
         var invoiceApiModels = invoices.ConvertAll();
 
         foreach (var invoice in invoiceApiModels)
@@ -21,8 +21,8 @@ public partial class ChinookSupervisor
             ;
             _cache.Set(string.Concat("Invoice-", invoice.Id), invoice, (TimeSpan)cacheEntryOptions);
         }
-
-        return invoiceApiModels;
+        var newPagedList = new PagedList<InvoiceApiModel>(invoiceApiModels.ToList(), invoices.TotalCount, invoices.CurrentPage, invoices.PageSize);
+        return newPagedList;
     }
 
     public async Task<InvoiceApiModel?> GetInvoiceById(int id)
@@ -38,7 +38,7 @@ public partial class ChinookSupervisor
             var invoice = await _invoiceRepository.GetById(id);
             if (invoice == null) return null;
             var invoiceApiModel = invoice.Convert();
-            invoiceApiModel.InvoiceLines = (await GetInvoiceLineByInvoiceId(invoiceApiModel.Id)).ToList();
+            //invoiceApiModel.InvoiceLines = (await GetInvoiceLineByInvoiceId(invoiceApiModel.Id)).ToList();
 
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
@@ -50,11 +50,12 @@ public partial class ChinookSupervisor
         }
     }
 
-    public async Task<IEnumerable<InvoiceApiModel>> GetInvoiceByCustomerId(int id)
+    public async Task<PagedList<InvoiceApiModel>> GetInvoiceByCustomerId(int id, int pageNumber, int pageSize)
     {
-        var invoices = await _invoiceRepository.GetByCustomerId(id);
-
-        return invoices.ConvertAll();
+        var invoices = await _invoiceRepository.GetByCustomerId(id, pageNumber, pageSize);
+        var invoiceApiModels = invoices.ConvertAll();
+        var newPagedList = new PagedList<InvoiceApiModel>(invoiceApiModels.ToList(), invoices.TotalCount, invoices.CurrentPage, invoices.PageSize);
+        return newPagedList;
     }
 
     public async Task<InvoiceApiModel> AddInvoice(InvoiceApiModel newInvoiceApiModel)
@@ -92,9 +93,11 @@ public partial class ChinookSupervisor
         => _invoiceRepository.Delete(id);
 
 
-    public async Task<IEnumerable<InvoiceApiModel>> GetInvoiceByEmployeeId(int id)
+    public async Task<PagedList<InvoiceApiModel>> GetInvoiceByEmployeeId(int id, int pageNumber, int pageSize)
     {
-        var invoices = await _invoiceRepository.GetByEmployeeId(id);
-        return invoices.ConvertAll();
+        var invoices = await _invoiceRepository.GetByEmployeeId(id, pageNumber, pageSize);
+        var invoiceApiModels = invoices.ConvertAll();
+        var newPagedList = new PagedList<InvoiceApiModel>(invoiceApiModels.ToList(), invoices.TotalCount, invoices.CurrentPage, invoices.PageSize);
+        return newPagedList;
     }
 }

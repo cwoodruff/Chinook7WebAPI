@@ -27,9 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Chinook.DataCmpldQry\Chinook.DataCmpldQry.csproj" />
-    <ProjectReference Include="..\Chinook.DataMarten\Chinook.DataMarten.csproj" />
-    <ProjectReference Include="..\Chinook.DataPostgres\Chinook.DataPostgres.csproj" />
     <ProjectReference Include="..\Chinook.Data\Chinook.Data.csproj" />
     <ProjectReference Include="..\Chinook.Domain\Chinook.Domain.csproj" />
   </ItemGroup>

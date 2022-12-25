@@ -1,10 +1,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-
-//using Chinook.Data;
-using Chinook.DataCmpldQry;
-using Chinook.DataPostgres;
+using Chinook.Data;
 
 namespace Chinook.API.Configurations;
 
@@ -21,10 +18,6 @@ public static class ConfigureConnections
             connection = configuration.GetConnectionString("ChinookDbDocker");
 
         services.AddDbContextPool<ChinookContext>(options => options.UseSqlServer(connection));
-        services.AddSingleton(new SqlConnection(connection));
-        
-        var connectionPostgres = configuration.GetConnectionString("ChinookPostgres");
-        services.AddDbContextPool<ChinookPostgresContext>(options => options.UseSqlServer(connectionPostgres));
 
         return services;
     }

@@ -1,4 +1,5 @@
 using Chinook.Domain.Entities;
+using Chinook.Domain.Extensions;
 using Chinook.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,8 +17,10 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity
     public async Task<bool> EntityExists(int id) =>
         await _context.Set<T>().AnyAsync(a => a.Id == id);
 
-    public async Task<List<T>> GetAll() =>
-        await _context.Set<T>().AsNoTrackingWithIdentityResolution().ToListAsync();
+    public async Task<PagedList<T>> GetAll(int pageNumber, int pageSize) =>
+        await PagedList<T>.ToPagedListAsync(_context.Set<T>().AsNoTrackingWithIdentityResolution(),
+            pageNumber,
+            pageSize);
 
     public async Task<T> GetById(int id) => await _context.Set<T>().SingleAsync(e => e.Id == id);
 

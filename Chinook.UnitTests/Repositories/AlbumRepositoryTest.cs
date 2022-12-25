@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Chinook.DataCmpldQry;
+using Chinook.Data;
 using Chinook.Domain.Entities;
 using Chinook.Domain.Repositories;
 using Chinook.UnitTests.Helpers;
@@ -41,7 +41,7 @@ namespace Chinook.UnitTests.Repositories
             _context.SaveChanges();
 
             // Act
-            var albums = await _repo.GetAll();
+            var albums = await _repo.GetAll(1,50);
 
             // Assert
             albums.Count.Should().Be(2);

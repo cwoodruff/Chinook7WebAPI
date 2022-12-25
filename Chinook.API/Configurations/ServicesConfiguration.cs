@@ -16,9 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.HttpLogging;
-
-//using Chinook.Data.Repositories;
-using Chinook.DataCmpldQry.Repositories;
+using Chinook.Data.Repositories;
 
 namespace Chinook.API.Configurations;
 

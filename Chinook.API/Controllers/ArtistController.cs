@@ -1,6 +1,8 @@
 ﻿using System.Net;
+using System.Text.Json;
 using Chinook.Domain.ApiModels;
 using Chinook.Domain.Exceptions;
+using Chinook.Domain.Extensions;
 using Chinook.Domain.ProblemDetails;
 using Chinook.Domain.Supervisor;
 using FluentValidation;
@@ -26,20 +28,28 @@ public class ArtistController : ControllerBase
 
     [HttpGet]
     [Produces("application/json")]
-    public async Task<ActionResult<List<ArtistApiModel>>> Get()
+    public async Task<ActionResult<PagedList<ArtistApiModel>>> Get([FromQuery] int pageNumber, [FromQuery] int pageSize)
     {
         try
         {
-            var artists = await _chinookSupervisor.GetAllArtist();
+            var artists = await _chinookSupervisor.GetAllArtist(pageNumber, pageSize);
 
             if (artists.Any())
             {
+                var metadata = new
+                {
+                    artists.TotalCount,
+                    artists.PageSize,
+                    artists.CurrentPage,
+                    artists.TotalPages,
+                    artists.HasNext,
+                    artists.HasPrevious
+                };
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
                 return Ok(artists);
             }
-            else
-            {
-                return StatusCode((int)HttpStatusCode.NotFound, "No Artists Could Be Found");
-            }
+
+            return StatusCode((int)HttpStatusCode.NotFound, "No Artists Could Be Found");
         }
         catch (ArtistProblemException ex)
         {
@@ -73,10 +83,8 @@ public class ArtistController : ControllerBase
             {
                 return Ok(artist);
             }
-            else
-            {
-                return StatusCode((int)HttpStatusCode.NotFound, "Artist Not Found");
-            }
+
+            return StatusCode((int)HttpStatusCode.NotFound, "Artist Not Found");
         }
         catch (Exception ex)
         {
@@ -97,10 +105,8 @@ public class ArtistController : ControllerBase
             {
                 return StatusCode((int)HttpStatusCode.BadRequest, "Given Artist is null");
             }
-            else
-            {
-                return Ok(await _chinookSupervisor.AddArtist(input));
-            }
+
+            return Ok(await _chinookSupervisor.AddArtist(input));
         }
         catch (ValidationException ex)
         {
@@ -127,10 +133,8 @@ public class ArtistController : ControllerBase
             {
                 return StatusCode((int)HttpStatusCode.BadRequest, "Given Artist is null");
             }
-            else
-            {
-                return Ok(await _chinookSupervisor.UpdateArtist(input));
-            }
+
+            return Ok(await _chinookSupervisor.UpdateArtist(input));
         }
         catch (ValidationException ex)
         {

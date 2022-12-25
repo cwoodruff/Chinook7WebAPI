@@ -1,5 +1,5 @@
-using Chinook.DataCmpldQry;
-using Chinook.DataCmpldQry.Repositories;
+using Chinook.Data;
+using Chinook.Data.Repositories;
 using Chinook.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 

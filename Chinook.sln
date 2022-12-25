@@ -9,15 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.Data", "Chinook.Dat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.Domain", "Chinook.Domain\Chinook.Domain.csproj", "{ADCD35C1-DA87-4393-B216-5A871E4C5A10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataCmpldQry", "Chinook.DataCmpldQry\Chinook.DataCmpldQry.csproj", "{750AEB8F-D210-4A2C-84BB-06245465DC27}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.UnitTests", "Chinook.UnitTests\Chinook.UnitTests.csproj", "{A3DBD61A-3C40-4598-98B6-857F68354FE7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.ImplementationTests", "Chinook.ImplementationTests\Chinook.ImplementationTests.csproj", "{DA1C99F3-54D7-4221-A1C6-E02DB392AD24}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataMarten", "Chinook.DataMarten\Chinook.DataMarten.csproj", "{A91FA6B1-14BE-49FC-B693-D3561ACEBAD9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.DataPostgres", "Chinook.DataPostgres\Chinook.DataPostgres.csproj", "{DF0A9626-2F5A-4C17-A895-E469B435C48F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +31,6 @@ Global
 		{ADCD35C1-DA87-4393-B216-5A871E4C5A10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADCD35C1-DA87-4393-B216-5A871E4C5A10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADCD35C1-DA87-4393-B216-5A871E4C5A10}.Release|Any CPU.Build.0 = Release|Any CPU
-		{750AEB8F-D210-4A2C-84BB-06245465DC27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{750AEB8F-D210-4A2C-84BB-06245465DC27}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{750AEB8F-D210-4A2C-84BB-06245465DC27}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{750AEB8F-D210-4A2C-84BB-06245465DC27}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A3DBD61A-3C40-4598-98B6-857F68354FE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A3DBD61A-3C40-4598-98B6-857F68354FE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3DBD61A-3C40-4598-98B6-857F68354FE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -49,14 +39,6 @@ Global
 		{DA1C99F3-54D7-4221-A1C6-E02DB392AD24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA1C99F3-54D7-4221-A1C6-E02DB392AD24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA1C99F3-54D7-4221-A1C6-E02DB392AD24}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A91FA6B1-14BE-49FC-B693-D3561ACEBAD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A91FA6B1-14BE-49FC-B693-D3561ACEBAD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A91FA6B1-14BE-49FC-B693-D3561ACEBAD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A91FA6B1-14BE-49FC-B693-D3561ACEBAD9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DF0A9626-2F5A-4C17-A895-E469B435C48F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF0A9626-2F5A-4C17-A895-E469B435C48F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF0A9626-2F5A-4C17-A895-E469B435C48F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF0A9626-2F5A-4C17-A895-E469B435C48F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,7 @@
-﻿using Chinook.Domain.Entities;
+﻿
+using Chinook.Domain.ApiModels;
+using Chinook.Domain.Entities;
+using Chinook.Domain.Extensions;
 using Chinook.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +15,9 @@ public class AlbumRepository : BaseRepository<Album>, IAlbumRepository, IDisposa
 
     public void Dispose() => _context.Dispose();
 
-    public async Task<List<Album>> GetByArtistId(int id) =>
-        await _context.Albums.Where(a => a.ArtistId == id).AsNoTrackingWithIdentityResolution().ToListAsync();
+    public async Task<PagedList<Album>> GetByArtistId(int id, int pageNumber, int pageSize) =>
+        await PagedList<Album>.ToPagedListAsync(_context.Albums.Where(a => a.ArtistId == id)
+                .AsNoTrackingWithIdentityResolution(),
+            pageNumber,
+            pageSize);
 }

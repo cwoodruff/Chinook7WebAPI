@@ -1,11 +1,13 @@
 ﻿using System.Net;
 using Chinook.Domain.ApiModels;
 using Chinook.Domain.Exceptions;
+using Chinook.Domain.Extensions;
 using Chinook.Domain.ProblemDetails;
 using Chinook.Domain.Supervisor;
 using FluentValidation;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Chinook.API.Controllers;
 
@@ -27,34 +29,43 @@ public class AlbumController : ControllerBase
 
     [HttpGet]
     [Produces(typeof(List<AlbumApiModel>))]
-    public async Task<ActionResult<List<AlbumApiModel>>> Get()
+    public async Task<ActionResult<PagedList<AlbumApiModel>>> Get([FromQuery] int pageNumber, [FromQuery] int pageSize)
     {
         try
         {
-            var albums = await _chinookSupervisor.GetAllAlbum();
+            var albums = await _chinookSupervisor.GetAllAlbum(pageNumber, pageSize);
 
             if (albums.Any())
             {
+                var metadata = new
+                {
+                    albums.TotalCount,
+                    albums.PageSize,
+                    albums.CurrentPage,
+                    albums.TotalPages,
+                    albums.HasNext,
+                    albums.HasPrevious
+                };
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
+                
                 return Ok(albums);
             }
-            else
+
+            var problemDetails = new AlbumProblemDetails
             {
-                var problemDetails = new AlbumProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Type = "https://example.com/api/Artist/not-found",
-                    Title = "Could not find any artists",
-                    Detail = "Something went wrong inside the ArtistController Get All action",
-                    AlbumId = null,
-                    Instance = HttpContext.Request.Path
-                };
-                _logger.LogError($"{problemDetails.Detail}");
-                return new ObjectResult(problemDetails)
-                {
-                    ContentTypes = { "application/problem+json" },
-                    StatusCode = 404,
-                };
-            }
+                Status = StatusCodes.Status404NotFound,
+                Type = "https://example.com/api/Artist/not-found",
+                Title = "Could not find any artists",
+                Detail = "Something went wrong inside the ArtistController Get All action",
+                AlbumId = null,
+                Instance = HttpContext.Request.Path
+            };
+            _logger.LogError($"{problemDetails.Detail}");
+            return new ObjectResult(problemDetails)
+            {
+                ContentTypes = { "application/problem+json" },
+                StatusCode = 404,
+            };
         }
         catch (AlbumProblemException ex)
         {
@@ -105,10 +116,8 @@ public class AlbumController : ControllerBase
             {
                 return Ok(album);
             }
-            else
-            {
-                return StatusCode((int)HttpStatusCode.NotFound, "Album Not Found");
-            }
+
+            return StatusCode((int)HttpStatusCode.NotFound, "Album Not Found");
         }
         catch (AlbumProblemException ex)
         {
@@ -141,10 +150,8 @@ public class AlbumController : ControllerBase
             {
                 return StatusCode((int)HttpStatusCode.BadRequest, "Given Album is null");
             }
-            else
-            {
-                return Ok(await _chinookSupervisor.AddAlbum(input));
-            }
+
+            return Ok(await _chinookSupervisor.AddAlbum(input));
         }
         catch (ValidationException ex)
         {
@@ -213,10 +220,8 @@ public class AlbumController : ControllerBase
             {
                 return StatusCode((int)HttpStatusCode.BadRequest, "Given Album is null");
             }
-            else
-            {
-                return Ok(await _chinookSupervisor.UpdateAlbum(input));
-            }
+
+            return Ok(await _chinookSupervisor.UpdateAlbum(input));
         }
         catch (ValidationException ex)
         {
@@ -284,20 +289,29 @@ public class AlbumController : ControllerBase
     }
 
     [HttpGet("artist/{id}")]
-    public async Task<ActionResult<List<AlbumApiModel>>> GetByArtistId(int id)
+    public async Task<ActionResult<PagedList<AlbumApiModel>>> GetByArtistId(int id, [FromQuery] int pageNumber, [FromQuery] int pageSize)
     {
         try
         {
-            var albums = await _chinookSupervisor.GetAlbumByArtistId(id);
+            var albums = await _chinookSupervisor.GetAlbumByArtistId(id, pageNumber, pageSize);
 
             if (albums.Any())
             {
+                var metadata = new
+                {
+                    albums.TotalCount,
+                    albums.PageSize,
+                    albums.CurrentPage,
+                    albums.TotalPages,
+                    albums.HasNext,
+                    albums.HasPrevious
+                };
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
+                
                 return Ok(albums);
             }
-            else
-            {
-                return StatusCode((int)HttpStatusCode.NotFound, "No Albums Could Be Found for the Artist");
-            }
+
+            return StatusCode((int)HttpStatusCode.NotFound, "No Albums Could Be Found for the Artist");
         }
         catch (Exception ex)
         {
