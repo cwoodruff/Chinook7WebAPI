@@ -3,7 +3,6 @@ using FluentValidation;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 using Chinook.Domain.ApiModels;
-using Chinook.Domain.Entities;
 
 namespace Chinook.Domain.Supervisor;
 

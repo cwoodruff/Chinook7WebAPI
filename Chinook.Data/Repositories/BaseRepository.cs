@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Chinook.Domain.Entities;
 using Chinook.Domain.Extensions;
 using Chinook.Domain.Repositories;
@@ -48,5 +49,12 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity
         _context.Set<T>().Remove(toRemove);
         await _context.SaveChangesAsync();
         return true;
+    }
+    
+    public IQueryable<T> GetByCondition(Expression<Func<T, bool>> expression)
+    {
+        return _context.Set<T>()
+            .Where(expression)
+            .AsNoTrackingWithIdentityResolution();
     }
 }
