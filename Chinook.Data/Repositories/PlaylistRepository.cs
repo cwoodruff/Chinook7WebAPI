@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chinook.Data.Repositories;
 
-public class PlaylistRepository : BaseRepository<Playlist>, IDisposable, IPlaylistRepository
+public class PlaylistRepository : BaseRepository<Playlist>, IPlaylistRepository
 {
     public PlaylistRepository(ChinookContext context) : base(context)
     {

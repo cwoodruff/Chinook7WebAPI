@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chinook.Data.Repositories;
 
-public class EmployeeRepository : BaseRepository<Employee>, IDisposable, IEmployeeRepository
+public class EmployeeRepository : BaseRepository<Employee>, IEmployeeRepository
 {
     public EmployeeRepository(ChinookContext context) : base(context)
     {

@@ -23,7 +23,7 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity
             pageNumber,
             pageSize);
 
-    public async Task<T> GetById(int id) => await _context.Set<T>().SingleAsync(e => e.Id == id);
+    public async Task<T?> GetById(int id) => await _context.Set<T>().SingleAsync(e => e.Id == id);
 
     public async Task<T> Add(T entity)
     {
@@ -46,7 +46,7 @@ public class BaseRepository<T> : IRepository<T> where T : BaseEntity
         if (!await EntityExists(id))
             return false;
         var toRemove = await _context.Set<T>().FindAsync(id);
-        _context.Set<T>().Remove(toRemove);
+        if (toRemove != null) _context.Set<T>().Remove(toRemove);
         await _context.SaveChangesAsync();
         return true;
     }

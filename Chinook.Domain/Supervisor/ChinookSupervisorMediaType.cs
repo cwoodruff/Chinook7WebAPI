@@ -10,17 +10,17 @@ public partial class ChinookSupervisor
     public async Task<PagedList<MediaTypeApiModel>> GetAllMediaType(int pageNumber, int pageSize)
     {
         var mediaTypes = await _mediaTypeRepository.GetAll(pageNumber, pageSize);
-        var mediaTypeApiModels = mediaTypes.ConvertAll();
+        var mediaTypeApiModels = mediaTypes.ConvertAll().ToList();
 
         foreach (var mediaType in mediaTypeApiModels)
         {
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            ;
+
             _cache.Set(string.Concat("MediaType-", mediaType.Id), mediaType, (TimeSpan)cacheEntryOptions);
         }
-        var newPagedList = new PagedList<MediaTypeApiModel>(mediaTypeApiModels.ToList(), mediaTypes.TotalCount, mediaTypes.CurrentPage, mediaTypes.PageSize);
+        var newPagedList = new PagedList<MediaTypeApiModel>(mediaTypeApiModels, mediaTypes.TotalCount, mediaTypes.CurrentPage, mediaTypes.PageSize);
         return newPagedList;
     }
 
@@ -42,7 +42,7 @@ public partial class ChinookSupervisor
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            ;
+
             _cache.Set(string.Concat("MediaType-", mediaTypeApiModel.Id), mediaTypeApiModel,
                 (TimeSpan)cacheEntryOptions);
 

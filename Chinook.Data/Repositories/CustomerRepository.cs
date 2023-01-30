@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chinook.Data.Repositories;
 
-public class CustomerRepository : BaseRepository<Customer>, IDisposable, ICustomerRepository
+public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
 {
     public CustomerRepository(ChinookContext context) : base(context)
     {

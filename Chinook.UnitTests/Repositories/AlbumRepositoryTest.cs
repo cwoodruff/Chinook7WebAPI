@@ -24,7 +24,7 @@ namespace Chinook.UnitTests.Repositories
         
         public void Dispose()
         {
-            _repo?.Dispose();
+            _repo.Dispose();
         }
 
         [Fact]

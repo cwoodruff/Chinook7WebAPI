@@ -10,17 +10,17 @@ public partial class ChinookSupervisor
     public async Task<PagedList<PlaylistApiModel>> GetAllPlaylist(int pageNumber, int pageSize)
     {
         var playlists = await _playlistRepository.GetAll(pageNumber, pageSize);
-        var playlistApiModels = playlists.ConvertAll();
+        var playlistApiModels = playlists.ConvertAll().ToList();
 
         foreach (var playList in playlistApiModels)
         {
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            ;
+
             _cache.Set(string.Concat("Playlist-", playList.Id), playList, (TimeSpan)cacheEntryOptions);
         }
-        var newPagedList = new PagedList<PlaylistApiModel>(playlistApiModels.ToList(), playlists.TotalCount, playlists.CurrentPage, playlists.PageSize);
+        var newPagedList = new PagedList<PlaylistApiModel>(playlistApiModels, playlists.TotalCount, playlists.CurrentPage, playlists.PageSize);
         return newPagedList;
     }
 
@@ -42,7 +42,7 @@ public partial class ChinookSupervisor
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            ;
+
             _cache.Set(string.Concat("Playlist-", playlistApiModel.Id), playlistApiModel,
                 (TimeSpan)cacheEntryOptions);
 

@@ -11,7 +11,7 @@ public partial class ChinookSupervisor
     public async Task<PagedList<TrackApiModel>> GetAllTrack(int pageNumber, int pageSize)
     {
         var tracks = await _trackRepository.GetAll(pageNumber, pageSize);
-        var trackApiModels = tracks.ConvertAll();
+        var trackApiModels = tracks.ConvertAll().ToList();
 
         foreach (var track in trackApiModels)
         {
@@ -22,7 +22,7 @@ public partial class ChinookSupervisor
             await _distributedCache.SetStringAsync($"Track-{track.Id}", JsonSerializer.Serialize(track),
                 cacheEntryOptions);
         }
-        var newPagedList = new PagedList<TrackApiModel>(trackApiModels.ToList(), tracks.TotalCount, tracks.CurrentPage, tracks.PageSize);
+        var newPagedList = new PagedList<TrackApiModel>(trackApiModels, tracks.TotalCount, tracks.CurrentPage, tracks.PageSize);
         return newPagedList;
     }
 

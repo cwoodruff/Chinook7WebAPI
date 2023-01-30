@@ -10,18 +10,18 @@ public partial class ChinookSupervisor
     public async Task<PagedList<AlbumApiModel>> GetAllAlbum(int pageNumber, int pageSize) // todo
     {
         var albums = await _albumRepository.GetAll(pageNumber, pageSize);
-        var albumApiModels = albums.ConvertAll<AlbumApiModel>();
+        var albumApiModels = albums.ConvertAll<AlbumApiModel>().ToList();
 
         foreach (var album in albumApiModels)
         {
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            ;
+
             _cache.Set(string.Concat("Album-", album.Id), album, (TimeSpan)cacheEntryOptions);
         }
 
-        var newPagedList = new PagedList<AlbumApiModel>(albumApiModels.ToList(), albums.TotalCount, albums.CurrentPage, albums.PageSize);
+        var newPagedList = new PagedList<AlbumApiModel>(albumApiModels, albums.TotalCount, albums.CurrentPage, albums.PageSize);
         return newPagedList;
     }
 
@@ -46,7 +46,7 @@ public partial class ChinookSupervisor
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            ;
+
             _cache.Set(string.Concat("Album-", albumApiModel.Id), albumApiModel, (TimeSpan)cacheEntryOptions);
 
             return albumApiModel;

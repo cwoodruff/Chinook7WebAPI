@@ -1,13 +1,11 @@
-﻿
-using Chinook.Domain.ApiModels;
-using Chinook.Domain.Entities;
+﻿using Chinook.Domain.Entities;
 using Chinook.Domain.Extensions;
 using Chinook.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chinook.Data.Repositories;
 
-public class AlbumRepository : BaseRepository<Album>, IAlbumRepository, IDisposable
+public class AlbumRepository : BaseRepository<Album>, IAlbumRepository
 {
     public AlbumRepository(ChinookContext context) : base(context)
     {

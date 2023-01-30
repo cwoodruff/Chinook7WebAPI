@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chinook.Data.Repositories;
 
-public class TrackRepository : BaseRepository<Track>, IDisposable, ITrackRepository
+public class TrackRepository : BaseRepository<Track>, ITrackRepository
 {
     public TrackRepository(ChinookContext context) : base(context)
     {
@@ -13,7 +13,7 @@ public class TrackRepository : BaseRepository<Track>, IDisposable, ITrackReposit
 
     public void Dispose() => _context.Dispose();
 
-    public async Task<PagedList<Track>?> GetByAlbumId(int id, int pageNumber, int pageSize) =>
+    public async Task<PagedList<Track>> GetByAlbumId(int id, int pageNumber, int pageSize) =>
         await PagedList<Track>.ToPagedListAsync(_context.Tracks.Where(a => a.AlbumId == id)
                 .AsNoTrackingWithIdentityResolution(),
             pageNumber,

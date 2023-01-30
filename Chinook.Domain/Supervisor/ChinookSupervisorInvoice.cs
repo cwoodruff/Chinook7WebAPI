@@ -10,17 +10,17 @@ public partial class ChinookSupervisor
     public async Task<PagedList<InvoiceApiModel>> GetAllInvoice(int pageNumber, int pageSize)
     {
         var invoices = await _invoiceRepository.GetAll(pageNumber, pageSize);
-        var invoiceApiModels = invoices.ConvertAll();
+        var invoiceApiModels = invoices.ConvertAll().ToList();
 
         foreach (var invoice in invoiceApiModels)
         {
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            ;
+
             _cache.Set(string.Concat("Invoice-", invoice.Id), invoice, (TimeSpan)cacheEntryOptions);
         }
-        var newPagedList = new PagedList<InvoiceApiModel>(invoiceApiModels.ToList(), invoices.TotalCount, invoices.CurrentPage, invoices.PageSize);
+        var newPagedList = new PagedList<InvoiceApiModel>(invoiceApiModels, invoices.TotalCount, invoices.CurrentPage, invoices.PageSize);
         return newPagedList;
     }
 
@@ -42,7 +42,7 @@ public partial class ChinookSupervisor
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            ;
+
             _cache.Set(string.Concat("Invoice-", invoiceApiModel.Id), invoiceApiModel, (TimeSpan)cacheEntryOptions);
 
             return invoiceApiModel;

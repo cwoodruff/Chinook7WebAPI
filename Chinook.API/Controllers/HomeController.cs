@@ -42,37 +42,43 @@ public class HomeController : ControllerBase
         if (ModelState.IsValid)
         {
             // check i the user with the same email exist
-            var existingUser = await _userManager.FindByEmailAsync(user.Email);
-
-            if (existingUser != null)
-                return BadRequest(new RegistrationResponse
-                {
-                    Result = false,
-                    Errors = new List<string>
-                    {
-                        "Email already exist"
-                    }
-                });
-
-            var newUser = new IdentityUser { Email = user.Email, UserName = user.Email };
-            var isCreated = await _userManager.CreateAsync(newUser, user.Password);
-            if (isCreated.Succeeded)
+            if (user.Email != null)
             {
-                var jwtToken = GenerateJwtToken(newUser);
+                var existingUser = await _userManager.FindByEmailAsync(user.Email);
 
-                return Ok(new RegistrationResponse
-                {
-                    Result = true,
-                    Token = jwtToken
-                });
+                if (existingUser != null)
+                    return BadRequest(new RegistrationResponse
+                    {
+                        Result = false,
+                        Errors = new List<string>
+                        {
+                            "Email already exist"
+                        }
+                    });
             }
 
-            return new JsonResult(new RegistrationResponse
+            var newUser = new IdentityUser { Email = user.Email, UserName = user.Email };
+            if (user.Password != null)
+            {
+                var isCreated = await _userManager.CreateAsync(newUser, user.Password);
+                if (isCreated.Succeeded)
                 {
-                    Result = false,
-                    Errors = isCreated.Errors.Select(x => x.Description).ToList()
+                    var jwtToken = GenerateJwtToken(newUser);
+
+                    return Ok(new RegistrationResponse
+                    {
+                        Result = true,
+                        Token = jwtToken
+                    });
                 }
-            ) { StatusCode = 500 };
+
+                return new JsonResult(new RegistrationResponse
+                    {
+                        Result = false,
+                        Errors = isCreated.Errors.Select(x => x.Description).ToList()
+                    }
+                ) { StatusCode = 500 };
+            }
         }
 
         return BadRequest(new RegistrationResponse
@@ -91,45 +97,48 @@ public class HomeController : ControllerBase
         if (ModelState.IsValid)
         {
             // check if the user with the same email exist
-            var existingUser = await _userManager.FindByEmailAsync(user.Email);
-
-            if (existingUser == null)
+            if (user.Email != null)
             {
-                // We don't want to give to much information on why the request has failed for security reasons
-                return BadRequest(new RegistrationResponse()
+                var existingUser = await _userManager.FindByEmailAsync(user.Email);
+
+                if (existingUser == null)
                 {
-                    Result = false,
-                    Errors = new List<string>()
+                    // We don't want to give to much information on why the request has failed for security reasons
+                    return BadRequest(new RegistrationResponse()
                     {
-                        "Invalid authentication request"
-                    }
-                });
-            }
+                        Result = false,
+                        Errors = new List<string>()
+                        {
+                            "Invalid authentication request"
+                        }
+                    });
+                }
 
-            // Now we need to check if the user has inputed the right password
-            var isCorrect = await _userManager.CheckPasswordAsync(existingUser, user.Password);
+                // Now we need to check if the user has inputed the right password
+                var isCorrect = user.Password != null && await _userManager.CheckPasswordAsync(existingUser, user.Password);
 
-            if (isCorrect)
-            {
-                var jwtToken = GenerateJwtToken(existingUser);
-
-                return Ok(new RegistrationResponse()
+                if (isCorrect)
                 {
-                    Result = true,
-                    Token = jwtToken
-                });
-            }
-            else
-            {
-                // We don't want to give to much information on why the request has failed for security reasons
-                return BadRequest(new RegistrationResponse()
-                {
-                    Result = false,
-                    Errors = new List<string>()
+                    var jwtToken = GenerateJwtToken(existingUser);
+
+                    return Ok(new RegistrationResponse()
                     {
-                        "Invalid authentication request"
-                    }
-                });
+                        Result = true,
+                        Token = jwtToken
+                    });
+                }
+                else
+                {
+                    // We don't want to give to much information on why the request has failed for security reasons
+                    return BadRequest(new RegistrationResponse()
+                    {
+                        Result = false,
+                        Errors = new List<string>()
+                        {
+                            "Invalid authentication request"
+                        }
+                    });
+                }
             }
         }
 

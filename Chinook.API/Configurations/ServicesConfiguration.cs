@@ -112,7 +112,7 @@ public static class ServicesConfiguration
             })
             .AddJwtBearer(jwt =>
             {
-                var key = Encoding.ASCII.GetBytes(configuration["JwtConfig:Secret"]);
+                var key = Encoding.ASCII.GetBytes(configuration["JwtConfig:Secret"] ?? string.Empty);
 
                 jwt.SaveToken = true;
                 jwt.TokenValidationParameters = new TokenValidationParameters
@@ -196,7 +196,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
         }
     }
 
-    public void Configure(string name, SwaggerGenOptions options)
+    public void Configure(string? name, SwaggerGenOptions options)
     {
         Configure(options);
     }

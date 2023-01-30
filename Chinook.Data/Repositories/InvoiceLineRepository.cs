@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chinook.Data.Repositories;
 
-public class InvoiceLineRepository : BaseRepository<InvoiceLine>, IDisposable, IInvoiceLineRepository
+public class InvoiceLineRepository : BaseRepository<InvoiceLine>, IInvoiceLineRepository
 {
     public InvoiceLineRepository(ChinookContext context) : base(context)
     {

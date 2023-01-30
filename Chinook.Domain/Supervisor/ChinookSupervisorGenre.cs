@@ -10,17 +10,17 @@ public partial class ChinookSupervisor
     public async Task<PagedList<GenreApiModel>> GetAllGenre(int pageNumber, int pageSize)
     {
         var genres = await _genreRepository.GetAll(pageNumber, pageSize);
-        var genreApiModels = genres.ConvertAll();
+        var genreApiModels = genres.ConvertAll().ToList();
 
         foreach (var genre in genreApiModels)
         {
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            ;
+
             _cache.Set(string.Concat("Genre-", genre.Id), genre, (TimeSpan)cacheEntryOptions);
         }
-        var newPagedList = new PagedList<GenreApiModel>(genreApiModels.ToList(), genres.TotalCount, genres.CurrentPage, genres.PageSize);
+        var newPagedList = new PagedList<GenreApiModel>(genreApiModels, genres.TotalCount, genres.CurrentPage, genres.PageSize);
         return newPagedList;
     }
 
@@ -42,7 +42,7 @@ public partial class ChinookSupervisor
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            ;
+
             _cache.Set(string.Concat("Genre-", genreApiModel.Id), genreApiModel, (TimeSpan)cacheEntryOptions);
 
             return genreApiModel;

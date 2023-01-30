@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Chinook.Data;
 

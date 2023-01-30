@@ -10,17 +10,18 @@ public partial class ChinookSupervisor
     public async Task<PagedList<InvoiceLineApiModel>> GetAllInvoiceLine(int pageNumber, int pageSize)
     {
         var invoiceLines = await _invoiceLineRepository.GetAll(pageNumber, pageSize);
-        var invoiceLineApiModels = invoiceLines.ConvertAll();
+        var invoiceLineApiModels = invoiceLines.ConvertAll().ToList();
 
-        foreach (var invoiceLine in invoiceLineApiModels)
+        var lineApiModels = invoiceLineApiModels.ToList();
+        foreach (var invoiceLine in lineApiModels)
         {
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            ;
+
             _cache.Set(string.Concat("InvoiceLine-", invoiceLine.Id), invoiceLine, (TimeSpan)cacheEntryOptions);
         }
-        var newPagedList = new PagedList<InvoiceLineApiModel>(invoiceLineApiModels.ToList(), invoiceLines.TotalCount, invoiceLines.CurrentPage, invoiceLines.PageSize);
+        var newPagedList = new PagedList<InvoiceLineApiModel>(lineApiModels, invoiceLines.TotalCount, invoiceLines.CurrentPage, invoiceLines.PageSize);
         return newPagedList;
     }
 
@@ -44,7 +45,7 @@ public partial class ChinookSupervisor
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            ;
+
             _cache.Set(string.Concat("InvoiceLine-", invoiceLineApiModel.Id), invoiceLineApiModel,
                 (TimeSpan)cacheEntryOptions);
 

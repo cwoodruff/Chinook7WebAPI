@@ -15,7 +15,6 @@ namespace Chinook.UnitTests.Supervisor;
 public class AlbumSupervisorTest : IDisposable
 {
     private readonly IChinookSupervisor _super;
-    private readonly TestHelper _helper;
     private readonly IAlbumRepository _albumRepo;
     private readonly IArtistRepository _artistRepo;
     private readonly ITrackRepository _trackRepo;
@@ -23,11 +22,11 @@ public class AlbumSupervisorTest : IDisposable
 
     public AlbumSupervisorTest()
     {
-        _helper = new TestHelper();
-        _context = _helper.Context;
-        _albumRepo = _helper.AlbumInMemoryRepository();
-        _artistRepo = _helper.ArtistInMemoryRepository();
-        _trackRepo = _helper.TrackInMemoryRepository();
+        var helper = new TestHelper();
+        _context = helper.Context;
+        _albumRepo = helper.AlbumInMemoryRepository();
+        _artistRepo = helper.ArtistInMemoryRepository();
+        _trackRepo = helper.TrackInMemoryRepository();
             
         _super = new ChinookSupervisor(_albumRepo, _artistRepo, null, null,
             null, null, null, null,
@@ -39,8 +38,8 @@ public class AlbumSupervisorTest : IDisposable
     /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
     public void Dispose()
     {
-        _albumRepo?.Dispose();
-        _artistRepo?.Dispose();
+        _albumRepo.Dispose();
+        _artistRepo.Dispose();
     }
 
     [Fact]
@@ -56,8 +55,8 @@ public class AlbumSupervisorTest : IDisposable
         _context.Artists.Add(artist);
         _context.Albums.Add(album1);
         _context.Albums.Add(album2);
-        //_context.Tracks.Add(track1);
-        //_context.Tracks.Add(track2);
+        _context.Tracks.Add(track1);
+        _context.Tracks.Add(track2);
         await _context.SaveChangesAsync();
 
         // Act
@@ -83,14 +82,14 @@ public class AlbumSupervisorTest : IDisposable
         _context.Artists.Add(artist);
         _context.Albums.Add(album1);
         _context.Albums.Add(album2);
-        //_context.Tracks.Add(track1);
-        //_context.Tracks.Add(track2);
+        _context.Tracks.Add(track1);
+        _context.Tracks.Add(track2);
         await _context.SaveChangesAsync();
 
         // Act
         var album = await _super.GetAlbumById(22);
 
         // Assert
-        album.Id.Should().Be(5);
+        album?.Id.Should().Be(5);
     }
 }
