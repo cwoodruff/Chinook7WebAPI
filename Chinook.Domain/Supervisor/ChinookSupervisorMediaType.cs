@@ -9,7 +9,7 @@ public partial class ChinookSupervisor
 {
     public async Task<PagedList<MediaTypeApiModel>> GetAllMediaType(int pageNumber, int pageSize)
     {
-        var mediaTypes = await _mediaTypeRepository.GetAll(pageNumber, pageSize);
+        var mediaTypes = await _mediaTypeRepository!.GetAll(pageNumber, pageSize);
         var mediaTypeApiModels = mediaTypes.ConvertAll().ToList();
 
         foreach (var mediaType in mediaTypeApiModels)
@@ -18,7 +18,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("MediaType-", mediaType.Id), mediaType, (TimeSpan)cacheEntryOptions);
+            _cache!.Set(string.Concat("MediaType-", mediaType.Id), mediaType, (TimeSpan)cacheEntryOptions);
         }
         var newPagedList = new PagedList<MediaTypeApiModel>(mediaTypeApiModels, mediaTypes.TotalCount, mediaTypes.CurrentPage, mediaTypes.PageSize);
         return newPagedList;
@@ -26,7 +26,7 @@ public partial class ChinookSupervisor
 
     public async Task<MediaTypeApiModel?> GetMediaTypeById(int id)
     {
-        var mediaTypeApiModelCached = _cache.Get<MediaTypeApiModel>(string.Concat("MediaType-", id));
+        var mediaTypeApiModelCached = _cache!.Get<MediaTypeApiModel>(string.Concat("MediaType-", id));
 
         if (mediaTypeApiModelCached != null)
         {
@@ -34,7 +34,7 @@ public partial class ChinookSupervisor
         }
         else
         {
-            var mediaType = await _mediaTypeRepository.GetById(id);
+            var mediaType = await _mediaTypeRepository!.GetById(id);
             if (mediaType == null) return null;
             var mediaTypeApiModel = mediaType.Convert();
             //mediaTypeApiModel.Tracks = (await GetTrackByMediaTypeId(mediaTypeApiModel.Id)).ToList();
@@ -43,7 +43,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("MediaType-", mediaTypeApiModel.Id), mediaTypeApiModel,
+            _cache!.Set(string.Concat("MediaType-", mediaTypeApiModel.Id), mediaTypeApiModel,
                 (TimeSpan)cacheEntryOptions);
 
             return mediaTypeApiModel;
@@ -56,7 +56,7 @@ public partial class ChinookSupervisor
 
         var mediaType = newMediaTypeApiModel.Convert();
 
-        mediaType = await _mediaTypeRepository.Add(mediaType);
+        mediaType = await _mediaTypeRepository!.Add(mediaType);
         newMediaTypeApiModel.Id = mediaType.Id;
         return newMediaTypeApiModel;
     }
@@ -65,7 +65,7 @@ public partial class ChinookSupervisor
     {
         await _mediaTypeValidator.ValidateAndThrowAsync(mediaTypeApiModel);
 
-        var mediaType = await _mediaTypeRepository.GetById(mediaTypeApiModel.Id);
+        var mediaType = await _mediaTypeRepository!.GetById(mediaTypeApiModel.Id);
 
         if (mediaType == null) return false;
         mediaType.Id = mediaTypeApiModel.Id;
@@ -75,5 +75,5 @@ public partial class ChinookSupervisor
     }
 
     public Task<bool> DeleteMediaType(int id)
-        => _mediaTypeRepository.Delete(id);
+        => _mediaTypeRepository!.Delete(id);
 }

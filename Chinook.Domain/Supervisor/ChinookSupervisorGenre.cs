@@ -9,7 +9,7 @@ public partial class ChinookSupervisor
 {
     public async Task<PagedList<GenreApiModel>> GetAllGenre(int pageNumber, int pageSize)
     {
-        var genres = await _genreRepository.GetAll(pageNumber, pageSize);
+        var genres = await _genreRepository!.GetAll(pageNumber, pageSize);
         var genreApiModels = genres.ConvertAll().ToList();
 
         foreach (var genre in genreApiModels)
@@ -18,7 +18,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("Genre-", genre.Id), genre, (TimeSpan)cacheEntryOptions);
+            _cache!.Set(string.Concat("Genre-", genre.Id), genre, (TimeSpan)cacheEntryOptions);
         }
         var newPagedList = new PagedList<GenreApiModel>(genreApiModels, genres.TotalCount, genres.CurrentPage, genres.PageSize);
         return newPagedList;
@@ -26,7 +26,7 @@ public partial class ChinookSupervisor
 
     public async Task<GenreApiModel?> GetGenreById(int id)
     {
-        var genreApiModelCached = _cache.Get<GenreApiModel>(string.Concat("Genre-", id));
+        var genreApiModelCached = _cache!.Get<GenreApiModel>(string.Concat("Genre-", id));
 
         if (genreApiModelCached != null)
         {
@@ -34,7 +34,7 @@ public partial class ChinookSupervisor
         }
         else
         {
-            var genre = await _genreRepository.GetById(id);
+            var genre = await _genreRepository!.GetById(id);
             if (genre == null) return null;
             var genreApiModel = genre.Convert();
             //genreApiModel.Tracks = (await GetTrackByGenreId(genreApiModel.Id)).ToList();
@@ -43,7 +43,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("Genre-", genreApiModel.Id), genreApiModel, (TimeSpan)cacheEntryOptions);
+            _cache!.Set(string.Concat("Genre-", genreApiModel.Id), genreApiModel, (TimeSpan)cacheEntryOptions);
 
             return genreApiModel;
         }
@@ -55,7 +55,7 @@ public partial class ChinookSupervisor
 
         var genre = newGenreApiModel.Convert();
 
-        genre = await _genreRepository.Add(genre);
+        genre = await _genreRepository!.Add(genre);
         newGenreApiModel.Id = genre.Id;
         return newGenreApiModel;
     }
@@ -64,7 +64,7 @@ public partial class ChinookSupervisor
     {
         await _genreValidator.ValidateAndThrowAsync(genreApiModel);
 
-        var genre = await _genreRepository.GetById(genreApiModel.Id);
+        var genre = await _genreRepository!.GetById(genreApiModel.Id);
 
         if (genre == null) return false;
         genre.Id = genreApiModel.Id;
@@ -74,5 +74,5 @@ public partial class ChinookSupervisor
     }
 
     public Task<bool> DeleteGenre(int id)
-        => _genreRepository.Delete(id);
+        => _genreRepository!.Delete(id);
 }

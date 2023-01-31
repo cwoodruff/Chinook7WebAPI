@@ -9,7 +9,7 @@ public partial class ChinookSupervisor
 {
     public async Task<PagedList<PlaylistApiModel>> GetAllPlaylist(int pageNumber, int pageSize)
     {
-        var playlists = await _playlistRepository.GetAll(pageNumber, pageSize);
+        var playlists = await _playlistRepository!.GetAll(pageNumber, pageSize);
         var playlistApiModels = playlists.ConvertAll().ToList();
 
         foreach (var playList in playlistApiModels)
@@ -18,7 +18,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("Playlist-", playList.Id), playList, (TimeSpan)cacheEntryOptions);
+            _cache!.Set(string.Concat("Playlist-", playList.Id), playList, (TimeSpan)cacheEntryOptions);
         }
         var newPagedList = new PagedList<PlaylistApiModel>(playlistApiModels, playlists.TotalCount, playlists.CurrentPage, playlists.PageSize);
         return newPagedList;
@@ -26,7 +26,7 @@ public partial class ChinookSupervisor
 
     public async Task<PlaylistApiModel> GetPlaylistById(int id)
     {
-        var playListApiModelCached = _cache.Get<PlaylistApiModel>(string.Concat("Playlist-", id));
+        var playListApiModelCached = _cache!.Get<PlaylistApiModel>(string.Concat("Playlist-", id));
 
         if (playListApiModelCached != null)
         {
@@ -34,7 +34,7 @@ public partial class ChinookSupervisor
         }
         else
         {
-            var playlist = await _playlistRepository.GetById(id);
+            var playlist = await _playlistRepository!.GetById(id);
             if (playlist == null) return null!;
             var playlistApiModel = playlist.Convert();
             //playlistApiModel.Tracks = (await GetTrackByMediaTypeId(playlistApiModel.Id)).ToList();
@@ -43,7 +43,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("Playlist-", playlistApiModel.Id), playlistApiModel,
+            _cache!.Set(string.Concat("Playlist-", playlistApiModel.Id), playlistApiModel,
                 (TimeSpan)cacheEntryOptions);
 
             return playlistApiModel;
@@ -56,7 +56,7 @@ public partial class ChinookSupervisor
 
         var playlist = newPlaylistApiModel.Convert();
 
-        playlist = await _playlistRepository.Add(playlist);
+        playlist = await _playlistRepository!.Add(playlist);
         newPlaylistApiModel.Id = playlist.Id;
         return newPlaylistApiModel;
     }
@@ -65,15 +65,14 @@ public partial class ChinookSupervisor
     {
         await _playlistValidator.ValidateAndThrowAsync(playlistApiModel);
 
-        var playlist = await _playlistRepository.GetById(playlistApiModel.Id);
+        var playlist = await _playlistRepository!.GetById(playlistApiModel.Id);
 
         if (playlist == null) return false;
         playlist.Id = playlistApiModel.Id;
         playlist.Name = playlistApiModel.Name ?? string.Empty;
 
-        return await _playlistRepository.Update(playlist);
+        return await _playlistRepository!.Update(playlist);
     }
 
-    public Task<bool> DeletePlaylist(int id)
-        => _playlistRepository.Delete(id);
+    public Task<bool> DeletePlaylist(int id) => _playlistRepository!.Delete(id);
 }

@@ -11,15 +11,14 @@ namespace Chinook.UnitTests.Repositories
 {
     public class AlbumRepositoryTest : IDisposable
     {
-        private readonly TestHelper _helper;
         private readonly IAlbumRepository _repo;
         private readonly ChinookContext _context;
 
         public AlbumRepositoryTest()
         {
-            _helper = new TestHelper();
-            _context = _helper.Context;
-            _repo = _helper.AlbumInMemoryRepository();
+            var helper = new TestHelper();
+            _context = helper.Context;
+            _repo = helper.AlbumInMemoryRepository();
         }
         
         public void Dispose()

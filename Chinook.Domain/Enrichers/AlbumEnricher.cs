@@ -16,14 +16,14 @@ public class AlbumEnricher : Enricher<AlbumApiModel>
         _linkGenerator = linkGenerator;
     }
 
-    public override Task Process(AlbumApiModel representation)
+    public override Task Process(AlbumApiModel? representation)
     {
         var httpContext = _accessor.HttpContext;
 
         var url = _linkGenerator.GetUriByName(
-            httpContext,
+            httpContext!,
             "album",
-            new { id = representation.Id },
+            new { id = representation!.Id },
             scheme: "https"
         );
         
@@ -31,7 +31,7 @@ public class AlbumEnricher : Enricher<AlbumApiModel>
             {
                 Id = representation.Id.ToString(),
                 Label = $"Album: {representation.Title} #{representation.Id}",
-                Url = url
+                Url = url!
             });
 
         return Task.CompletedTask;

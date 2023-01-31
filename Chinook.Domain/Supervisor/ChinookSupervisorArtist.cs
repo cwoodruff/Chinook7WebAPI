@@ -9,7 +9,7 @@ public partial class ChinookSupervisor
 {
     public async Task<PagedList<ArtistApiModel>> GetAllArtist(int pageNumber, int pageSize)
     {
-        var artists = await _artistRepository.GetAll(pageNumber, pageSize);
+        var artists = await _artistRepository!.GetAll(pageNumber, pageSize);
         var artistApiModels = artists.ConvertAll().ToList();
 
         foreach (var artist in artistApiModels)
@@ -18,7 +18,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("Artist-", artist.Id), artist, (TimeSpan)cacheEntryOptions);
+            _cache!.Set(string.Concat("Artist-", artist.Id), artist, (TimeSpan)cacheEntryOptions);
         }
         var newPagedList = new PagedList<ArtistApiModel>(artistApiModels, artists.TotalCount, artists.CurrentPage, artists.PageSize);
         return newPagedList;
@@ -26,7 +26,7 @@ public partial class ChinookSupervisor
 
     public async Task<ArtistApiModel> GetArtistById(int id)
     {
-        var artistApiModelCached = _cache.Get<ArtistApiModel>(string.Concat("Artist-", id));
+        var artistApiModelCached = _cache!.Get<ArtistApiModel>(string.Concat("Artist-", id));
 
         if (artistApiModelCached != null)
         {
@@ -34,7 +34,7 @@ public partial class ChinookSupervisor
         }
         else
         {
-            var artist = await _artistRepository.GetById(id);
+            var artist = await _artistRepository!.GetById(id);
             if (artist == null) return null!;
             var artistApiModel = artist.Convert();
             //artistApiModel.Albums = (await _albumRepository.GetByArtistId(artist.Id)).ConvertAll().ToList();
@@ -43,7 +43,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("Artist-", artistApiModel.Id), artistApiModel, (TimeSpan)cacheEntryOptions);
+            _cache!.Set(string.Concat("Artist-", artistApiModel.Id), artistApiModel, (TimeSpan)cacheEntryOptions);
 
             return artistApiModel;
         }
@@ -55,7 +55,7 @@ public partial class ChinookSupervisor
 
         var artist = newArtistApiModel.Convert();
 
-        artist = await _artistRepository.Add(artist);
+        artist = await _artistRepository!.Add(artist);
         newArtistApiModel.Id = artist.Id;
         return newArtistApiModel;
     }
@@ -64,7 +64,7 @@ public partial class ChinookSupervisor
     {
         await _artistValidator.ValidateAndThrowAsync(artistApiModel);
 
-        var artist = await _artistRepository.GetById(artistApiModel.Id);
+        var artist = await _artistRepository!.GetById(artistApiModel.Id);
 
         if (artist == null) return false;
         artist.Id = artistApiModel.Id;
@@ -74,5 +74,5 @@ public partial class ChinookSupervisor
     }
 
     public Task<bool> DeleteArtist(int id)
-        => _artistRepository.Delete(id);
+        => _artistRepository!.Delete(id);
 }

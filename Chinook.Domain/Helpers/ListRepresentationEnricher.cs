@@ -19,9 +19,9 @@ public class ListRepresentationEnricher : IAsyncResultFilter
             var value = result.Value;
             foreach (var enricher in enrichers)
             {
-                if (await enricher.Match(value))
+                if (await enricher.Match(value!))
                 {
-                    await enricher.Process(value as List<object>);
+                    await enricher.Process((value as List<object>)!);
                 }
             }
         }

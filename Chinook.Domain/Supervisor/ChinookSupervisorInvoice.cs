@@ -9,7 +9,7 @@ public partial class ChinookSupervisor
 {
     public async Task<PagedList<InvoiceApiModel>> GetAllInvoice(int pageNumber, int pageSize)
     {
-        var invoices = await _invoiceRepository.GetAll(pageNumber, pageSize);
+        var invoices = await _invoiceRepository!.GetAll(pageNumber, pageSize);
         var invoiceApiModels = invoices.ConvertAll().ToList();
 
         foreach (var invoice in invoiceApiModels)
@@ -18,7 +18,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("Invoice-", invoice.Id), invoice, (TimeSpan)cacheEntryOptions);
+            _cache!.Set(string.Concat("Invoice-", invoice.Id), invoice, (TimeSpan)cacheEntryOptions);
         }
         var newPagedList = new PagedList<InvoiceApiModel>(invoiceApiModels, invoices.TotalCount, invoices.CurrentPage, invoices.PageSize);
         return newPagedList;
@@ -26,7 +26,7 @@ public partial class ChinookSupervisor
 
     public async Task<InvoiceApiModel?> GetInvoiceById(int id)
     {
-        var invoiceApiModelCached = _cache.Get<InvoiceApiModel>(string.Concat("Invoice-", id));
+        var invoiceApiModelCached = _cache!.Get<InvoiceApiModel>(string.Concat("Invoice-", id));
 
         if (invoiceApiModelCached != null)
         {
@@ -34,7 +34,7 @@ public partial class ChinookSupervisor
         }
         else
         {
-            var invoice = await _invoiceRepository.GetById(id);
+            var invoice = await _invoiceRepository!.GetById(id);
             if (invoice == null) return null;
             var invoiceApiModel = invoice.Convert();
             //invoiceApiModel.InvoiceLines = (await GetInvoiceLineByInvoiceId(invoiceApiModel.Id)).ToList();
@@ -43,7 +43,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("Invoice-", invoiceApiModel.Id), invoiceApiModel, (TimeSpan)cacheEntryOptions);
+            _cache!.Set(string.Concat("Invoice-", invoiceApiModel.Id), invoiceApiModel, (TimeSpan)cacheEntryOptions);
 
             return invoiceApiModel;
         }
@@ -51,7 +51,7 @@ public partial class ChinookSupervisor
 
     public async Task<PagedList<InvoiceApiModel>> GetInvoiceByCustomerId(int id, int pageNumber, int pageSize)
     {
-        var invoices = await _invoiceRepository.GetByCustomerId(id, pageNumber, pageSize);
+        var invoices = await _invoiceRepository!.GetByCustomerId(id, pageNumber, pageSize);
         var invoiceApiModels = invoices.ConvertAll();
         var newPagedList = new PagedList<InvoiceApiModel>(invoiceApiModels.ToList(), invoices.TotalCount, invoices.CurrentPage, invoices.PageSize);
         return newPagedList;
@@ -63,7 +63,7 @@ public partial class ChinookSupervisor
 
         var invoice = newInvoiceApiModel.Convert();
 
-        invoice = await _invoiceRepository.Add(invoice);
+        invoice = await _invoiceRepository!.Add(invoice);
         newInvoiceApiModel.Id = invoice.Id;
         return newInvoiceApiModel;
     }
@@ -72,7 +72,7 @@ public partial class ChinookSupervisor
     {
         await _invoiceValidator.ValidateAndThrowAsync(invoiceApiModel);
 
-        var invoice = await _invoiceRepository.GetById(invoiceApiModel.Id);
+        var invoice = await _invoiceRepository!.GetById(invoiceApiModel.Id);
 
         if (invoice == null) return false;
         invoice.Id = invoiceApiModel.Id;
@@ -89,12 +89,12 @@ public partial class ChinookSupervisor
     }
 
     public Task<bool> DeleteInvoice(int id)
-        => _invoiceRepository.Delete(id);
+        => _invoiceRepository!.Delete(id);
 
 
     public async Task<PagedList<InvoiceApiModel>> GetInvoiceByEmployeeId(int id, int pageNumber, int pageSize)
     {
-        var invoices = await _invoiceRepository.GetByEmployeeId(id, pageNumber, pageSize);
+        var invoices = await _invoiceRepository!.GetByEmployeeId(id, pageNumber, pageSize);
         var invoiceApiModels = invoices.ConvertAll();
         var newPagedList = new PagedList<InvoiceApiModel>(invoiceApiModels.ToList(), invoices.TotalCount, invoices.CurrentPage, invoices.PageSize);
         return newPagedList;

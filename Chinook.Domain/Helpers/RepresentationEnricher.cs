@@ -19,7 +19,7 @@ public class RepresentationEnricher : IAsyncResultFilter
             var value = result.Value;
             foreach (var enricher in enrichers)
             {
-                if (await enricher.Match(value))
+                if (value != null && await enricher.Match(value))
                 {
                     await enricher.Process(value);
                 }

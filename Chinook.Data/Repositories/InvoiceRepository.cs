@@ -14,7 +14,7 @@ public class InvoiceRepository : BaseRepository<Invoice>, IInvoiceRepository
     public void Dispose() => _context.Dispose();
 
     public async Task<PagedList<Invoice>> GetByEmployeeId(int id, int pageNumber, int pageSize) =>
-        await PagedList<Invoice>.ToPagedListAsync(_context.Customers.Where(a => a.SupportRepId == id).SelectMany(t => t.Invoices)
+        await PagedList<Invoice>.ToPagedListAsync(_context.Customers.Where(a => a.SupportRepId == id).SelectMany(t => t.Invoices!)
                 .AsNoTrackingWithIdentityResolution(),
             pageNumber,
             pageSize);

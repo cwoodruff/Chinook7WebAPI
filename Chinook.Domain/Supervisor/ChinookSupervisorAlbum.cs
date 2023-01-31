@@ -9,7 +9,7 @@ public partial class ChinookSupervisor
 {
     public async Task<PagedList<AlbumApiModel>> GetAllAlbum(int pageNumber, int pageSize) // todo
     {
-        var albums = await _albumRepository.GetAll(pageNumber, pageSize);
+        var albums = await _albumRepository!.GetAll(pageNumber, pageSize);
         var albumApiModels = albums.ConvertAll<AlbumApiModel>().ToList();
 
         foreach (var album in albumApiModels)
@@ -18,7 +18,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("Album-", album.Id), album, (TimeSpan)cacheEntryOptions);
+            _cache!.Set(string.Concat("Album-", album.Id), album, (TimeSpan)cacheEntryOptions);
         }
 
         var newPagedList = new PagedList<AlbumApiModel>(albumApiModels, albums.TotalCount, albums.CurrentPage, albums.PageSize);
@@ -27,7 +27,7 @@ public partial class ChinookSupervisor
 
     public async Task<AlbumApiModel?> GetAlbumById(int id)
     {
-        var albumApiModelCached = _cache.Get<AlbumApiModel>(string.Concat("Album-", id));
+        var albumApiModelCached = _cache!.Get<AlbumApiModel>(string.Concat("Album-", id));
 
         if (albumApiModelCached != null)
         {
@@ -35,10 +35,10 @@ public partial class ChinookSupervisor
         }
         else
         {
-            var album = await _albumRepository.GetById(id);
+            var album = await _albumRepository!.GetById(id);
             if (album == null) return null;
             var albumApiModel = album.Convert();
-            var result = (_artistRepository.GetById(album.ArtistId)).Result;
+            var result = (_artistRepository!.GetById(album.ArtistId)).Result;
             if (result != null)
                 albumApiModel.ArtistName = result.Name;
             //albumApiModel.Tracks = (await GetTrackByAlbumId(id) ?? Array.Empty<TrackApiModel>()).ToList();
@@ -47,7 +47,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("Album-", albumApiModel.Id), albumApiModel, (TimeSpan)cacheEntryOptions);
+            _cache!.Set(string.Concat("Album-", albumApiModel.Id), albumApiModel, (TimeSpan)cacheEntryOptions);
 
             return albumApiModel;
         }
@@ -55,7 +55,7 @@ public partial class ChinookSupervisor
 
     public async Task<PagedList<AlbumApiModel>> GetAlbumByArtistId(int id, int pageNumber, int pageSize)
     {
-        var albums = await _albumRepository.GetByArtistId(id, pageNumber, pageSize);
+        var albums = await _albumRepository!.GetByArtistId(id, pageNumber, pageSize);
         var albumApiModels = albums.ConvertAll<AlbumApiModel>();
         var newPagedList = new PagedList<AlbumApiModel>(albumApiModels.ToList(), albums.TotalCount, albums.CurrentPage, albums.PageSize);
         return newPagedList;
@@ -67,7 +67,7 @@ public partial class ChinookSupervisor
 
         var album = newAlbumApiModel.Convert();
 
-        album = await _albumRepository.Add(album);
+        album = await _albumRepository!.Add(album);
         newAlbumApiModel.Id = album.Id;
         return newAlbumApiModel;
     }
@@ -76,7 +76,7 @@ public partial class ChinookSupervisor
     {
         await _albumValidator.ValidateAndThrowAsync(albumApiModel);
 
-        var album = await _albumRepository.GetById(albumApiModel.Id);
+        var album = await _albumRepository!.GetById(albumApiModel.Id);
 
         if (album is null) return false;
         album.Id = albumApiModel.Id;
@@ -87,5 +87,5 @@ public partial class ChinookSupervisor
     }
 
     public Task<bool> DeleteAlbum(int id)
-        => _albumRepository.Delete(id);
+        => _albumRepository!.Delete(id);
 }

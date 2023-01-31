@@ -9,7 +9,7 @@ public partial class ChinookSupervisor
 {
     public async Task<PagedList<EmployeeApiModel>> GetAllEmployee(int pageNumber, int pageSize)
     {
-        var employees = await _employeeRepository.GetAll(pageNumber, pageSize);
+        var employees = await _employeeRepository!.GetAll(pageNumber, pageSize);
         var employeeApiModels = employees.ConvertAll().ToList();
 
         foreach (var employee in employeeApiModels)
@@ -18,7 +18,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("Employee-", employee.Id), employee, (TimeSpan)cacheEntryOptions);
+            _cache!.Set(string.Concat("Employee-", employee.Id), employee, (TimeSpan)cacheEntryOptions);
         }
         var newPagedList = new PagedList<EmployeeApiModel>(employeeApiModels, employees.TotalCount, employees.CurrentPage, employees.PageSize);
         return newPagedList;
@@ -26,7 +26,7 @@ public partial class ChinookSupervisor
 
     public async Task<EmployeeApiModel?> GetEmployeeById(int id)
     {
-        var employeeApiModelCached = _cache.Get<EmployeeApiModel>(string.Concat("Employee-", id));
+        var employeeApiModelCached = _cache!.Get<EmployeeApiModel>(string.Concat("Employee-", id));
 
         if (employeeApiModelCached != null)
         {
@@ -34,7 +34,7 @@ public partial class ChinookSupervisor
         }
         else
         {
-            var employee = await _employeeRepository.GetById(id);
+            var employee = await _employeeRepository!.GetById(id);
             if (employee == null) return null;
             var employeeApiModel = employee.Convert();
 
@@ -42,7 +42,7 @@ public partial class ChinookSupervisor
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
 
-            _cache.Set(string.Concat("Employee-", employeeApiModel.Id), employeeApiModel,
+            _cache!.Set(string.Concat("Employee-", employeeApiModel.Id), employeeApiModel,
                 (TimeSpan)cacheEntryOptions);
 
             return employeeApiModel;
@@ -51,7 +51,7 @@ public partial class ChinookSupervisor
 
     public async Task<EmployeeApiModel?> GetEmployeeReportsTo(int id)
     {
-        var employee = await _employeeRepository.GetReportsTo(id);
+        var employee = await _employeeRepository!.GetReportsTo(id);
         return employee.Convert();
     }
 
@@ -61,7 +61,7 @@ public partial class ChinookSupervisor
 
         var employee = newEmployeeApiModel.Convert();
 
-        employee = await _employeeRepository.Add(employee);
+        employee = await _employeeRepository!.Add(employee);
         newEmployeeApiModel.Id = employee.Id;
         return newEmployeeApiModel;
     }
@@ -70,7 +70,7 @@ public partial class ChinookSupervisor
     {
         await _employeeValidator.ValidateAndThrowAsync(employeeApiModel);
 
-        var employee = await _employeeRepository.GetById(employeeApiModel.Id);
+        var employee = await _employeeRepository!.GetById(employeeApiModel.Id);
 
         if (employee == null) return false;
         employee.Id = employeeApiModel.Id;
@@ -93,17 +93,17 @@ public partial class ChinookSupervisor
     }
 
     public Task<bool> DeleteEmployee(int id)
-        => _employeeRepository.Delete(id);
+        => _employeeRepository!.Delete(id);
 
     public async Task<IEnumerable<EmployeeApiModel>> GetEmployeeDirectReports(int id)
     {
-        var employees = await _employeeRepository.GetDirectReports(id);
+        var employees = await _employeeRepository!.GetDirectReports(id);
         return employees.ConvertAll();
     }
 
     public async Task<IEnumerable<EmployeeApiModel>> GetDirectReports(int id)
     {
-        var employees = await _employeeRepository.GetDirectReports(id);
+        var employees = await _employeeRepository!.GetDirectReports(id);
         return employees.ConvertAll();
     }
 }

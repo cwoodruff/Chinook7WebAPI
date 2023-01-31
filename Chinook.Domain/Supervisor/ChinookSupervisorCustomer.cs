@@ -9,7 +9,7 @@ public partial class ChinookSupervisor
 {
     public async Task<PagedList<CustomerApiModel>> GetAllCustomer(int pageNumber, int pageSize)
     {
-        var customers = await _customerRepository.GetAll(pageNumber, pageSize);
+        var customers = await _customerRepository!.GetAll(pageNumber, pageSize);
         var customerApiModels = customers.ConvertAll().ToList();
         
         foreach (var customer in customerApiModels)
@@ -17,7 +17,7 @@ public partial class ChinookSupervisor
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            _cache.Set(string.Concat("Customer-", customer.Id), customer, (TimeSpan)cacheEntryOptions);
+            _cache!.Set(string.Concat("Customer-", customer.Id), customer, (TimeSpan)cacheEntryOptions);
         }
         var newPagedList = new PagedList<CustomerApiModel>(customerApiModels, customers.TotalCount, customers.CurrentPage, customers.PageSize);
         return newPagedList;
@@ -25,7 +25,7 @@ public partial class ChinookSupervisor
 
     public async Task<CustomerApiModel> GetCustomerById(int id)
     {
-        var customerApiModelCached = _cache.Get<CustomerApiModel>(string.Concat("Customer-", id));
+        var customerApiModelCached = _cache!.Get<CustomerApiModel>(string.Concat("Customer-", id));
 
         if (customerApiModelCached != null)
         {
@@ -33,7 +33,7 @@ public partial class ChinookSupervisor
         }
         else
         {
-            var customer = await _customerRepository.GetById(id);
+            var customer = await _customerRepository!.GetById(id);
             if (customer == null) return null!;
             var customerApiModel = customer.Convert();
             //customerApiModel.Invoices = (await GetInvoiceByCustomerId(customerApiModel.Id)).ToList();
@@ -46,7 +46,7 @@ public partial class ChinookSupervisor
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            _cache.Set(string.Concat("Customer-", customerApiModel.Id), customerApiModel,
+            _cache!.Set(string.Concat("Customer-", customerApiModel.Id), customerApiModel,
                 (TimeSpan)cacheEntryOptions);
 
             return customerApiModel;
@@ -55,7 +55,7 @@ public partial class ChinookSupervisor
 
     public async Task<PagedList<CustomerApiModel>> GetCustomerBySupportRepId(int id, int pageNumber, int pageSize)
     {
-        var customers = await _customerRepository.GetBySupportRepId(id, pageNumber, pageSize);
+        var customers = await _customerRepository!.GetBySupportRepId(id, pageNumber, pageSize);
         var customerApiModels = customers.ConvertAll();
 
         foreach (var customer in customers)
@@ -63,7 +63,7 @@ public partial class ChinookSupervisor
             var cacheEntryOptions =
                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(604800))
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(604800);
-            _cache.Set(string.Concat("Customer-", customer.Id), customer, (TimeSpan)cacheEntryOptions);
+            _cache!.Set(string.Concat("Customer-", customer.Id), customer, (TimeSpan)cacheEntryOptions);
         }
         var newPagedList = new PagedList<CustomerApiModel>(customerApiModels.ToList(), customers.TotalCount, customers.CurrentPage, customers.PageSize);
         return newPagedList;
@@ -75,7 +75,7 @@ public partial class ChinookSupervisor
 
         var customer = newCustomerApiModel.Convert();
 
-        customer = await _customerRepository.Add(customer);
+        customer = await _customerRepository!.Add(customer);
         newCustomerApiModel.Id = customer.Id;
         return newCustomerApiModel;
     }
@@ -84,7 +84,7 @@ public partial class ChinookSupervisor
     {
         await _customerValidator.ValidateAndThrowAsync(customerApiModel);
 
-        var customer = await _customerRepository.GetById(customerApiModel.Id);
+        var customer = await _customerRepository!.GetById(customerApiModel.Id);
 
         if (customer == null) return false;
         customer.FirstName = customerApiModel.FirstName;
@@ -104,5 +104,5 @@ public partial class ChinookSupervisor
     }
 
     public Task<bool> DeleteCustomer(int id)
-        => _customerRepository.Delete(id);
+        => _customerRepository!.Delete(id);
 }
