@@ -17,6 +17,8 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.HttpLogging;
 using Chinook.Data.Repositories;
+using Chinook.Domain.Enrichers;
+using Chinook.Domain.Helpers;
 
 namespace Chinook.API.Configurations;
 
@@ -172,6 +174,19 @@ public static class ServicesConfiguration
                 };
             }
         );
+    }
+    
+    public static void AddRepresentations(this IServiceCollection services)
+    {
+        services .AddScoped<AlbumEnricher>()
+            .AddScoped<IEnricher, AlbumEnricher>()
+            .AddScoped<AlbumsEnricher>()
+            .AddScoped<IListEnricher, AlbumsEnricher>();
+        
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+        services.AddScoped<RepresentationEnricher>();
+        services.AddScoped<ListRepresentationEnricher>();
     }
 }
 

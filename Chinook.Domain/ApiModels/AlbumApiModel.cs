@@ -1,5 +1,6 @@
 ﻿using Chinook.Domain.Converters;
 using Chinook.Domain.Entities;
+using Chinook.Domain.Helpers;
 
 namespace Chinook.Domain.ApiModels;
 

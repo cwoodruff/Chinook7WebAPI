@@ -48,6 +48,8 @@ public class AlbumController : ControllerBase
                 };
                 Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
                 
+                
+                
                 return Ok(albums);
             }
 

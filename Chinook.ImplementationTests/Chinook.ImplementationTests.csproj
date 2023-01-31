@@ -10,11 +10,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AngleSharp" Version="0.17.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.1" />
-        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.1">
+        <PackageReference Include="AngleSharp" Version="1.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="7.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

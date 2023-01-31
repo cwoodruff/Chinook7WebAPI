@@ -1,4 +1,5 @@
 using Chinook.API.Configurations;
+using Chinook.Domain.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,12 @@ builder.Services.AddVersioning();
 builder.Services.AddApiExplorer();
 builder.Services.AddSwaggerServices();
 builder.Services.AddProblemDetail();
-builder.Services.AddControllers();
+builder.Services.AddRepresentations();
+
+builder.Services.AddControllers(cfg =>
+{
+    cfg.Filters.Add<RepresentationEnricher>();
+});
 
 var app = builder.Build();
 app.UseHttpLogging();

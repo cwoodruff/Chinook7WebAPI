@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31808.319
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.API", "Chinook.API\Chinook.API.csproj", "{97527ED1-C3F5-40C1-8F94-4C027FB10878}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chinook.API", "Chinook.API\Chinook.API.csproj", "{97527ED1-C3F5-40C1-8F94-4C027FB10878}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.Data", "Chinook.Data\Chinook.Data.csproj", "{DD410279-F27C-42D9-9E49-D02D423B76F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chinook.Data", "Chinook.Data\Chinook.Data.csproj", "{DD410279-F27C-42D9-9E49-D02D423B76F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.Domain", "Chinook.Domain\Chinook.Domain.csproj", "{ADCD35C1-DA87-4393-B216-5A871E4C5A10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chinook.Domain", "Chinook.Domain\Chinook.Domain.csproj", "{ADCD35C1-DA87-4393-B216-5A871E4C5A10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.UnitTests", "Chinook.UnitTests\Chinook.UnitTests.csproj", "{A3DBD61A-3C40-4598-98B6-857F68354FE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chinook.UnitTests", "Chinook.UnitTests\Chinook.UnitTests.csproj", "{A3DBD61A-3C40-4598-98B6-857F68354FE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook.ImplementationTests", "Chinook.ImplementationTests\Chinook.ImplementationTests.csproj", "{DA1C99F3-54D7-4221-A1C6-E02DB392AD24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chinook.ImplementationTests", "Chinook.ImplementationTests\Chinook.ImplementationTests.csproj", "{DA1C99F3-54D7-4221-A1C6-E02DB392AD24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAPIClient", "OpenAPIClient\OpenAPIClient.csproj", "{39704320-0AAD-4888-AD6E-83977DA6449E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{DA1C99F3-54D7-4221-A1C6-E02DB392AD24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA1C99F3-54D7-4221-A1C6-E02DB392AD24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA1C99F3-54D7-4221-A1C6-E02DB392AD24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39704320-0AAD-4888-AD6E-83977DA6449E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39704320-0AAD-4888-AD6E-83977DA6449E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39704320-0AAD-4888-AD6E-83977DA6449E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39704320-0AAD-4888-AD6E-83977DA6449E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
