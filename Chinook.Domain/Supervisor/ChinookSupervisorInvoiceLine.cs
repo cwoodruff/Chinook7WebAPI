@@ -1,4 +1,3 @@
-using Chinook.Domain.ApiModels;
 using Chinook.Domain.Extensions;
 using FluentValidation;
 using Microsoft.Extensions.Caching.Memory;

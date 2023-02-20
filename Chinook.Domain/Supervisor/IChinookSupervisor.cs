@@ -1,5 +1,4 @@
-﻿using Chinook.Domain.ApiModels;
-using Chinook.Domain.Extensions;
+﻿using Chinook.Domain.Extensions;
 
 namespace Chinook.Domain.Supervisor;
 

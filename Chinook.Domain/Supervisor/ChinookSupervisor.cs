@@ -1,5 +1,4 @@
-﻿using Chinook.Domain.ApiModels;
-using Chinook.Domain.Repositories;
+﻿using Chinook.Domain.Repositories;
 using FluentValidation;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;

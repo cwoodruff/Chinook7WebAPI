@@ -1,5 +1,4 @@
-﻿using Chinook.Domain.ApiModels;
-using Chinook.Domain.Helpers;
+﻿using Chinook.Domain.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
