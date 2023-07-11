@@ -424,6 +424,8 @@ FodyWeavers.xsd
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
+.idea/**/aws.xml
+.idea/**/dataSources.xml
 
 # Gradle
 .idea/**/gradle.xml
